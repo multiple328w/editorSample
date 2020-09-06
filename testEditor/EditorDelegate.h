@@ -12,6 +12,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EditorDelegate : NSObject
 
+@property(nonatomic) BOOL editorLoaded;
+@property(nonatomic) BOOL shouldShowKeyboard;
+
+- (void)focusTextEditor;
+
 @end
 
 NS_ASSUME_NONNULL_END

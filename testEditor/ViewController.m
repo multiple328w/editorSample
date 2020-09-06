@@ -8,10 +8,10 @@
 
 #import "ViewController.h"
 #import "EditorDelegate.h"
+#import "WebViewInjection.h"
 
 @interface ViewController ()
 @property (nonatomic,strong) EditorDelegate* editDelegate;
-
 @end
 
 @implementation ViewController
@@ -21,6 +21,9 @@
   self.editDelegate = [[EditorDelegate alloc] init];
   // Do any additional setup after loading the view.
   [self initializeWebView];
+  _webview.UIDelegate = self.editDelegate;
+  _webview.navigationDelegate = self.editDelegate;
+  [WebViewInjection allowDisplayingKeyboardWithoutUserAction];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -55,6 +58,14 @@
   [self.view addConstraint:leftAnchor];
   [self.view addConstraint:rightAnchor];
   [self.view addConstraint:heightAnchor];
+}
+
+- (void)setNeedsFocusUpdate {
+  if (self.editDelegate.shouldShowKeyboard) {
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+          [self.editDelegate focusTextEditor];
+      });
+  }
 }
 
 @end
